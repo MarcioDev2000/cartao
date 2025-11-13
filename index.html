@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Agenda do Workshop BAI 2025 — palestras, workshops e painéis sobre inovação e tecnologia." />
+  <title>Agenda Workshop BPA OPICS </title>
+  <!-- Fonte moderna e legível -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+  :root{
+  --bg: linear-gradient(180deg,#f5f7fa 0%, #ffffff 60%);
+    --surface: #ffffff;
+    --primary: #ff6a1a; /* laranja vibrante */
+    --accent: #06b6b6; /* ciano mais suave */
+    --muted: #6b7280;
+    --text: #0b1220;
+    --border: #e6e9ee;
+    --radius: 12px;
+    --container-width: 1100px;
+  }
+  /* Tema escuro (Black) - aplicado adicionando .theme-dark ao body */
+  body.theme-dark{
+    --bg: linear-gradient(180deg,#050608 0%, #0b0b0d 60%);
+    /* keep schedule card light for readability */
+    --surface: #0b1220; /* used by session cards */
+    --card-surface: #ffffff; /* white card behind schedule for contrast */
+    --primary: #ff8a50;
+    --accent: #06f0e6; /* brighter cyan for better contrast */
+    --muted: #9aa4b2;
+    --text: #e6eef6;
+    --border: rgba(255,255,255,0.06);
+    --glass: rgba(255,255,255,0.03);
+  }
+
+  /* botão de alternância de tema */
+  .theme-toggle{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.06);padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:700;transition:transform .15s,box-shadow .15s,background .2s,color .2s}
+  .theme-toggle .theme-icon{display:inline-flex;align-items:center;justify-content:center;color:var(--accent)}
+  .theme-toggle .theme-label{font-size:13px;opacity:0.95}
+  .theme-toggle:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(2,6,23,0.08)}
+  .navbar .header-actions{position:relative}
+  /* position header actions to top-right visually (matches screenshot) */
+  .navbar .header-actions{position:absolute;right:20px;top:14px}
+
+  /* smooth transitions for theme change */
+  body, .schedule, .session-card, .day-label, .hero-carousel, .container{transition:background .25s ease, color .25s ease, box-shadow .25s ease, border-color .2s ease;}
+
+  /* Dark-mode overrides for specific components to match design in the screenshot */
+  body.theme-dark .container{background:transparent;}
+  /* Schedule card stays light for readability in dark mode (matches screenshot) */
+  body.theme-dark .schedule{background:linear-gradient(#ffffff,#fbfdff);border:1px solid rgba(255,255,255,0.06)}
+  /* Session cards are dark boxes inside the white schedule card */
+  body.theme-dark .session-card{background:var(--surface);color:var(--text);box-shadow:0 10px 30px rgba(2,6,23,0.5)}
+  body.theme-dark .session-card .sala, body.theme-dark .session-card .hora{color:var(--muted)}
+  body.theme-dark .session-card.tema{border-left:4px solid var(--primary)}
+
+  /* Day pills in dark mode: darker pill, subtle inner shadow, active glow */
+  body.theme-dark .day-label{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+  body.theme-dark #day1:checked ~ .days label[for="day1"],
+  body.theme-dark #day2:checked ~ .days label[for="day2"],
+  body.theme-dark #day3:checked ~ .days label[for="day3"]{
+    background:linear-gradient(180deg, rgba(6,182,182,0.08), rgba(6,182,182,0.02));
+    box-shadow:0 8px 30px rgba(6,240,230,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+    border:1px solid rgba(6,240,230,0.18);
+    color:var(--accent);
+  }
+  body.theme-dark #day1:checked ~ .days label[for="day1"] .title,
+  body.theme-dark #day2:checked ~ .days label[for="day2"] .title,
+  body.theme-dark #day3:checked ~ .days label[for="day3"] .title{color:var(--accent)}
+
+  /* Theme toggle in dark mode: faint glass background */
+  body.theme-dark .theme-toggle{border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:var(--text)}
+  /* ===== Global ===== */
+  html,body{height:100%;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter, Poppins, Arial, sans-serif;-webkit-font-smoothing:antialiased;}
+  .container{max-width:var(--container-width);margin:24px auto;padding:28px;background:transparent}
+  /* Skip link for keyboard users */
+  .skip-link{position:fixed;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
+  .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:9999}
+  /* ===== Header ===== */
+  /* Header NÃO fixo por padrão. Vai receber .is-sticky quando o usuário rolar a página. */
+  /* Por padrão é transparente para não mostrar a barra de background antes do scroll.
+    Usamos position:absolute para que o header sobreponha o hero (sem empurrá-lo),
+    e quando o usuário rolar o header troca para fixed (.is-sticky) via JS. */
+  header{position:absolute;top:0;left:0;right:0;height:64px;background:transparent;box-shadow:none;display:flex;align-items:center;z-index:1000}
+  /* Estado quando fixo (aplicado via JS) */
+  header.is-sticky{position:fixed;left:0;right:0;top:0;height:64px;background:linear-gradient(90deg,#002b7f 0%,#b33b2b 100%);box-shadow:0 6px 18px rgba(15,23,42,0.08)}
+  .navbar{display:flex;align-items:center;justify-content:space-between;max-width:var(--container-width);width:100%;margin:0 auto;padding:0 20px;color:#fff;position:relative}
+  /* nav alinhada à direita, logo permanece à esquerda */
+  /* menu removido - navegação não necessária */
+  .header-actions{display:flex;align-items:center;gap:12px}
+  .play-cta{background:#2ea6ff;color:#04203a;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+  .play-cta .dot{width:10px;height:10px;background:#fff;border-radius:50%}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo img{height:40px;width:auto;display:block}
+  .logo span{font-weight:700;font-size:18px;letter-spacing:0.2px}
+  /* navegação removida - links e botão não são necessários */
+  /* ===== Carousel / Hero ===== */
+  .hero-carousel{position:relative;min-height:520px;overflow:hidden;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,0.06);margin-bottom:18px}
+  .carousel-slides{height:100%;display:flex;transition:transform .8s ease}
+  .slide{min-width:100%;height:520px;background-size:cover;background-position:center right;position:relative;display:flex;align-items:center;background-repeat:no-repeat}
+  /* gradient overlay will be added as the first background layer per-slide (inline) */
+  .slide::after{display:none}
+  .slide .hero-content{position:relative;z-index:2;padding:60px 20px;max-width:820px;color:#fff}
+  .slide h2{font-family:Poppins,Inter,Arial,sans-serif;font-size:48px;line-height:0.95;margin:0 0 12px;font-weight:800;letter-spacing:1px}
+  .slide p.lead{font-size:16px;margin:0 0 10px;font-weight:600;color:rgba(255,255,255,0.95)}
+  .slide .meta{font-size:14px;color:rgba(255,255,255,0.9)}
+  .carousel-prev,.carousel-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.35);border:0;color:#fff;width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer}
+  .carousel-prev{left:18px}
+  .carousel-next{right:18px}
+  /* improved controls */
+  .carousel-prev,.carousel-next{width:54px;height:54px;border-radius:50%;background:linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.32));box-shadow:0 6px 18px rgba(2,6,23,0.4);font-size:26px}
+  .carousel-prev:focus,.carousel-next:focus{outline:3px solid rgba(6,182,182,0.18)}
+  .carousel-prev:hover,.carousel-next:hover{transform:translateY(-6%) scale(1.03)}
+  .carousel-indicators{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:10px}
+  .carousel-indicators button{width:14px;height:14px;border-radius:50%;border:0;background:rgba(255,255,255,0.2);cursor:pointer;transition:transform .12s,background .12s}
+  .carousel-indicators button:focus{outline:3px solid rgba(6,182,182,0.12)}
+  .carousel-indicators button.active{background:var(--accent);box-shadow:0 10px 24px rgba(6,182,182,0.14);transform:scale(1.12)}
+  /* UX rules block */
+  .ux-rules{margin:40px auto 80px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;max-width:var(--container-width);box-shadow:0 8px 30px rgba(2,6,23,0.04)}
+  .ux-rules h3{margin:0 0 10px;font-size:20px}
+  .ux-rules ul{margin:0;padding-left:18px;color:var(--muted)}
+  .ux-rules li{margin-bottom:8px}
+  /* ===== Titles ===== */
+  h1{text-align:center;font-size:36px;margin:8px 0 6px}
+  .subtitle{text-align:center;color:var(--muted);font-size:15px;margin-bottom:30px}
+  /* ===== Days (tabs) ===== */
+  .days{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+  .day-input{display:none}
+  .day-label{cursor:pointer;padding:12px 18px;border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(246,249,252,0.9));border:1px solid rgba(15,23,42,0.04);display:flex;flex-direction:column;align-items:center;min-width:120px;transition:transform .18s,box-shadow .18s,background .18s}
+  .day-label:hover{transform:translateY(-4px);box-shadow:0 8px 18px rgba(2,6,23,0.06)}
+  .day-label:active{transform:translateY(-2px)}
+  .day-label .title{font-weight:700;font-size:15px;color:var(--text)}
+  .day-label .date{font-size:12px;color:var(--muted);margin-top:4px}
+  .day-label:focus-visible{outline:3px solid rgba(6,182,182,0.18);border-radius:14px}
+  /* visual active state using the checked input (inputs are before .days) */
+#day1:checked ~ .days label[for="day1"],
+#day2:checked ~ .days label[for="day2"],
+#day3:checked ~ .days label[for="day3"] {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+  border: 1px solid rgba(6,182,182,0.12);
+  box-shadow: 0 6px 18px rgba(6,182,182,0.06);
+  transform: translateY(-2px);
+}
+#day1:checked ~ .days label[for="day1"] .title,
+#day2:checked ~ .days label[for="day2"] .title,
+#day3:checked ~ .days label[for="day3"] .title {
+  color: var(--accent);
+}
+  .chev{color:#cbd5e1;align-self:center;font-size:18px}
+  /* dias scroll (melhora para muitos dias) */
+  .days{overflow-x:auto;padding:10px 6px 14px;white-space:nowrap;gap:12px}
+  .days::-webkit-scrollbar{height:8px}
+  .days::-webkit-scrollbar-thumb{background:rgba(15,23,42,0.08);border-radius:8px}
+  .day-label{display:inline-flex;flex-direction:column;align-items:center;min-width:110px}
+  .day-label .title{font-size:15px}
+  /* ===== Schedule ===== */
+  .schedule{background:linear-gradient(#fbfdff,#ffffff);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  /* Agenda table base styles */
+  .agenda-table{width:100%;background:rgba(255,255,255,0.98);border-radius:10px;overflow:hidden;box-shadow:0 12px 30px rgba(2,6,23,0.08);color:var(--muted);border:1px solid var(--border)}
+  .agenda-table thead th{background:#0b63a4;color:#fff;padding:10px 12px;text-align:left;font-weight:700;border-right:1px solid rgba(255,255,255,0.06)}
+  .agenda-table tbody td{padding:12px;color:rgba(11,18,32,0.65);vertical-align:middle}
+  .agenda-table tbody tr td{border-top:1px solid var(--border)}
+  .agenda-table td[ rowspan ]{vertical-align:middle}
+  /* Dark-mode overrides: keep table visually consistent with dark theme */
+  body.theme-dark .schedule{background:transparent;border:none}
+  body.theme-dark .agenda-table{
+    background:linear-gradient(180deg, rgba(11,18,32,0.96), rgba(6,10,16,0.96));
+    box-shadow:0 18px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+    color:var(--text);
+    border:1px solid rgba(255,255,255,0.04);
+  }
+  /* Cabeçalho com tom azul mais profundo, texto claro */
+  body.theme-dark .agenda-table thead th{background:linear-gradient(180deg,#083b5a,#0b63a4);color:#ffffff}
+  /* Linhas e texto claros com boa legibilidade */
+  body.theme-dark .agenda-table tbody td{color:rgba(230,238,246,0.95)}
+  body.theme-dark .agenda-table tbody tr:nth-child(odd){background:rgba(255,255,255,0.01)}
+  body.theme-dark .agenda-table tbody tr:hover{background:rgba(255,255,255,0.02)}
+  /* Aumentar contraste nas células que ocupam várias linhas */
+  body.theme-dark .agenda-table td[ rowspan ]{vertical-align:middle}
+  /* Responsividade para tabela */
+  @media (max-width:900px){
+    .agenda-table{font-size:14px}
+    .agenda-table thead th, .agenda-table tbody td{padding:8px}
+  }
+
+  /* Mobile: transformar tabela em layout empilhado para leitura confortável */
+  @media (max-width:700px){
+    .table-responsive{padding:0}
+    .agenda-table{border:0;background:transparent;box-shadow:none}
+    .agenda-table thead{display:none}
+    .agenda-table tbody, .agenda-table tr, .agenda-table td{display:block;width:100%}
+    .agenda-table tbody tr{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));margin-bottom:12px;padding:12px;border-radius:8px}
+    .agenda-table td{padding:8px 10px;border-top:none;border-right:none}
+    .agenda-table td:before{content:attr(data-label);display:block;font-weight:700;color:var(--muted);margin-bottom:6px}
+    body.theme-dark .agenda-table td:before{color:rgba(230,238,246,0.85)}
+  }
+  .schedule-header{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.6fr;background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,250,250,0.98));padding:12px 18px;border-bottom:1px solid var(--border);font-weight:700;color:var(--muted);text-transform:uppercase;font-size:13px;position:sticky;top:0;z-index:2}
+  .schedule-content{display:none;opacity:0;transition:opacity .35s ease}
+  .session{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.6fr;padding:18px;border-bottom:1px solid var(--border);gap:10px;align-items:start}
+  .session{background:transparent}
+  .session-card{background:var(--surface);border-radius:10px;padding:16px;box-shadow:0 8px 26px rgba(2,6,23,0.06);transition:transform .16s,box-shadow .16s}
+  .session-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(2,6,23,0.08)}
+  .session-card.tema{border-left:4px solid var(--primary);padding-left:12px}
+  .session .tema{font-weight:600;color:var(--text);margin-bottom:6px}
+  .session .sala{color:var(--muted);font-weight:600}
+  .session .hora{font-size:13px;color:var(--muted)}
+  .session .oradores ul{margin:0;padding-left:18px}
+  .session .oradores li{margin-bottom:6px}
+  /* show active day */
+  #day1:checked ~ .schedule [data-day="1"],
+    #day2:checked ~ .schedule [data-day="2"],
+    #day3:checked ~ .schedule [data-day="3"]{
+      display:block;opacity:1;
+    }
+  /* focus states for accessibility */
+  a:focus,button:focus,label:focus{outline:none}
+  .day-label:focus-visible, .nav-links a:focus-visible{outline:3px solid rgba(6,182,182,0.18);border-radius:10px}
+  /* responsive */
+  @media (max-width:900px){
+    .container{padding:24px 16px}
+    .container > .card-wrap{padding:18px}
+    .schedule-header, .session{grid-template-columns:1fr}
+    .session div{border-right:none;border-bottom:0;padding:8px 6px}
+  nav.nav-links{display:none}
+  .menu-toggle{display:none}
+    .day-label{min-width:96px;padding:8px 12px}
+    .slide{height:420px}
+    .hero-carousel{min-height:420px}
+    .slide h2{font-size:30px}
+  }
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Pular para conteúdo</a>
+  <header>
+    <div class="navbar">
+      <div class="logo">
+        <img src="BAI.png" alt="BAI">
+      </div>
+        <!-- ações do cabeçalho: troca de tema -->
+        <div class="header-actions">
+          <!-- Modern theme toggle: icon + label -->
+          <button id="themeToggle" class="theme-toggle" aria-pressed="false" aria-label="Alternar tema: claro / preto" title="Alternar tema">
+            <span class="theme-icon" aria-hidden="true">
+              <!-- sun icon (default light) -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 20v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4.2 4.2l1.4 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M18.4 18.4l1.4 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 12h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M20 12h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4.2 19.8l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <span class="theme-label">Light</span>
+          </button>
+        </div>
+    </div>
+  </header>
+  <main id="main">
+    <!-- Carousel / Hero -->
+    <section class="hero-carousel" aria-label="Destaques">
+      <div class="carousel-slides" data-current="0">
+  <div class="slide" style="background-image: linear-gradient(90deg, rgba(0,43,127,0.65) 0%, rgba(179,59,43,0.45) 100%), url('13.jpg')" data-title="Workshop Cartões" data-lead="Produto Cartão — CMS, Emissão e Remessas" data-meta="21 - 25 Novembro 2025 | Híbrido">
+          <div class="hero-content">
+            <h2>Workshop Cartões</h2>
+            <p class="lead">Sessões técnicas e demonstrações do produto cartão e CMS</p>
+            <div class="meta">21 - 25 Novembro de 2025 | Híbrido</div>
+          </div>
+        </div>
+  <div class="slide" style="background-image: linear-gradient(90deg, rgba(0,43,127,0.55) 0%, rgba(179,59,43,0.35) 100%), url('15.jpg')" data-title="Programa Cartões" data-lead="Alinhamento, Emissão e Remessas — agenda técnica" data-meta="Sessões: 21, 24 e 25 Novembro 2025 | Híbrido">
+          <div class="hero-content">
+            <h2>Programa Cartões</h2>
+            <p class="lead">Alinhamento com a Squad, emissão e remessas (personalizados e não personalizados)</p>
+            <div class="meta">Sessões: 21, 24 e 25 Novembro de 2025 | Híbrido</div>
+          </div>
+        </div>
+  <div class="slide" style="background-image: linear-gradient(90deg, rgba(0,43,127,0.6) 0%, rgba(179,59,43,0.4) 100%), url('banner.webp')" data-title="Demonstrações Cartões" data-lead="Demo do CMS, Gestão de Ciclo de Vida e Registos de Ficheiros" data-meta="Sessões principais: 21, 24 e 25 Novembro 2025 | Híbrido">
+          <div class="hero-content">
+            <h2>Demonstrações Cartões</h2>
+            <p class="lead">Demonstração prática do CMS e dos fluxos de emissão e gestão de cartões</p>
+            <div class="meta">Sessões principais: 21, 24 e 25 Novembro de 2025 | Híbrido</div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-prev" aria-label="Anterior">‹</button>
+      <button class="carousel-next" aria-label="Próximo">›</button>
+      <div class="carousel-indicators" role="tablist">
+        <button aria-label="Slide 1" class="active"></button>
+        <button aria-label="Slide 2"></button>
+        <button aria-label="Slide 3"></button>
+      </div>
+    </section>
+    <div class="container">
+      <h1>AGENDA — Workshop Cartões</h1>
+        <p class="subtitle">No âmbito do Workshop <strong>Cartões</strong> (Produto Cartão — CMS, Emissão e Remessas), apresentamos em seguida o programa previsto por dias: </p>
+      <input type="radio" id="day1" name="day" class="day-input" checked>
+      <input type="radio" id="day2" name="day" class="day-input">
+      <input type="radio" id="day3" name="day" class="day-input">
+      <!-- DIAS (01 - 03) -->
+      <div class="days" role="tablist" aria-label="Selecionar dia">
+        <label for="day1" class="day-label" tabindex="0"><span class="title">Dia 01</span><span class="date">21/11/2025</span></label>
+        <label for="day2" class="day-label" tabindex="0"><span class="title">Dia 02</span><span class="date">24/11/2025</span></label>
+        <label for="day3" class="day-label" tabindex="0"><span class="title">Dia 03</span><span class="date">25/11/2025</span></label>
+      </div>
+      <!-- PROGRAMA / SCHEDULE (atualizado com a tabela de Cartões) -->
+      <div class="schedule" role="region" aria-label="Programação do evento">
+        <div class="table-responsive" style="overflow:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;">
+        <table class="agenda-table" style="width:100%;border-collapse:collapse;border:1px solid var(--border);">
+          <thead>
+            <tr style="background:#0b63a4;color:#fff;font-weight:700;text-align:left;">
+              <th style="padding:10px 12px;border-right:1px solid rgba(255,255,255,0.06)">Dia</th>
+              <th style="padding:10px 12px;border-right:1px solid rgba(255,255,255,0.06)">Data</th>
+              <th style="padding:10px 12px;border-right:1px solid rgba(255,255,255,0.06)">Sessão</th>
+              <th style="padding:10px 12px;border-right:1px solid rgba(255,255,255,0.06)">Módulo</th>
+              <th style="padding:10px 12px;border-right:1px solid rgba(255,255,255,0.06)">Perfis de Audiência</th>
+              <th style="padding:10px 12px;">Nome dos Participantes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Dia" rowspan="2" style="padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle">1</td>
+              <td data-label="Data" rowspan="2" style="padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle">21/11/2025</td>
+              <td data-label="Sessão" style="padding:10px 12px;border-top:1px solid var(--border);">Manhã</td>
+              <td data-label="Módulo" style="padding:10px 12px;border-top:1px solid var(--border);">Alinhamento C/ a Squad de Cartões</td>
+              <td data-label="Perfis de Audiência" style="padding:10px 12px;border-top:1px solid var(--border);">Front; Middle; Back &amp; IT</td>
+              <td data-label="Nome dos Participantes" style="padding:10px 12px;border-top:1px solid var(--border);"></td>
+            </tr>
+            <tr>
+              <td data-label="Sessão" style="padding:10px 12px;border-top:1px solid var(--border);">Tarde</td>
+              <td data-label="Módulo" style="padding:10px 12px;border-top:1px solid var(--border);">Demo do CMS e Produto Cartão</td>
+              <td data-label="Perfis de Audiência" style="padding:10px 12px;border-top:1px solid var(--border);">Front; Middle; Back &amp; IT</td>
+              <td data-label="Nome dos Participantes" style="padding:10px 12px;border-top:1px solid var(--border);"></td>
+            </tr>
+
+            <tr>
+              <td data-label="Dia" rowspan="2" style="padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle">2</td>
+              <td data-label="Data" rowspan="2" style="padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle">24/11/2025</td>
+              <td data-label="Sessão" style="padding:10px 12px;border-top:1px solid var(--border);">Manhã</td>
+              <td data-label="Módulo" style="padding:10px 12px;border-top:1px solid var(--border);">Emissão e Remessas – Cartões Não Personalizados</td>
+              <td data-label="Perfis de Audiência" style="padding:10px 12px;border-top:1px solid var(--border);">Front; Middle &amp; Back</td>
+              <td data-label="Nome dos Participantes" style="padding:10px 12px;border-top:1px solid var(--border);"></td>
+            </tr>
+            <tr>
+              <td data-label="Sessão" style="padding:10px 12px;border-top:1px solid var(--border);">Tarde</td>
+              <td data-label="Módulo" style="padding:10px 12px;border-top:1px solid var(--border);">Emissão e Remessas – Cartões Personalizados</td>
+              <td data-label="Perfis de Audiência" style="padding:10px 12px;border-top:1px solid var(--border);">Front; Middle &amp; Back</td>
+              <td data-label="Nome dos Participantes" style="padding:10px 12px;border-top:1px solid var(--border);"></td>
+            </tr>
+
+            <tr>
+              <td data-label="Dia" rowspan="2" style="padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle">3</td>
+              <td data-label="Data" rowspan="2" style="padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle">25/11/2025</td>
+              <td data-label="Sessão" style="padding:10px 12px;border-top:1px solid var(--border);">Manhã</td>
+              <td data-label="Módulo" style="padding:10px 12px;border-top:1px solid var(--border);">Gestão de Ciclo de Vida</td>
+              <td data-label="Perfis de Audiência" style="padding:10px 12px;border-top:1px solid var(--border);">Front; Middle; Back &amp; IT</td>
+              <td data-label="Nome dos Participantes" style="padding:10px 12px;border-top:1px solid var(--border);"></td>
+            </tr>
+            <tr>
+              <td data-label="Sessão" style="padding:10px 12px;border-top:1px solid var(--border);">Tarde</td>
+              <td data-label="Módulo" style="padding:10px 12px;border-top:1px solid var(--border);">Registos de Ficheiros</td>
+              <td data-label="Perfis de Audiência" style="padding:10px 12px;border-top:1px solid var(--border);">Front; Back &amp; IT</td>
+              <td data-label="Nome dos Participantes" style="padding:10px 12px;border-top:1px solid var(--border);"></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div> <!-- .schedule -->
+    </div> <!-- .container -->
+  </main>
+  <script>
+    // Handler mínimo: permitir ativar os labels de dia via teclado (Enter / Space)
+    (function(){
+      document.querySelectorAll('.day-label').forEach(function(lbl){
+        lbl.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); lbl.click(); }});
+      });
+    })();
+    
+    // Carousel simples: autoplay, indicadores, botões e teclado
+    (function(){
+      var carousel = document.querySelector('.hero-carousel');
+      if(!carousel) return;
+      var slidesWrap = carousel.querySelector('.carousel-slides');
+      var slides = carousel.querySelectorAll('.slide');
+      var prev = carousel.querySelector('.carousel-prev');
+      var next = carousel.querySelector('.carousel-next');
+      var indicators = carousel.querySelectorAll('.carousel-indicators button');
+      var current = 0;
+      var total = slides.length;
+    // intervalo de autoplay em ms (ajustado para leitura confortável)
+    var interval = 20000; // 20 segundos
+      var timer = null;
+      function goTo(i){
+        current = (i + total) % total;
+        slidesWrap.style.transform = 'translateX(' + (-current*100) + '%)';
+        indicators.forEach(function(btn, idx){
+          var active = idx===current;
+          btn.classList.toggle('active', active);
+          if(active){ btn.setAttribute('aria-current','true'); } else { btn.removeAttribute('aria-current'); }
+        });
+      }
+      function nextSlide(){ goTo(current+1); }
+      function prevSlide(){ goTo(current-1); }
+      next && next.addEventListener('click', function(){ nextSlide(); resetTimer(); });
+      prev && prev.addEventListener('click', function(){ prevSlide(); resetTimer(); });
+  indicators.forEach(function(btn, idx){ btn.setAttribute('aria-label','Slide ' + (idx+1)); btn.setAttribute('role','tab'); btn.addEventListener('click', function(){ goTo(idx); resetTimer(); btn.focus(); }); });
+      function startTimer(){ timer = setInterval(nextSlide, interval); }
+      function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+      function resetTimer(){ stopTimer(); startTimer(); }
+      carousel.addEventListener('mouseenter', stopTimer);
+      carousel.addEventListener('focusin', stopTimer);
+      carousel.addEventListener('mouseleave', startTimer);
+      carousel.addEventListener('focusout', startTimer);
+      document.addEventListener('keydown', function(e){ if(e.key === 'ArrowLeft') prevSlide(); if(e.key === 'ArrowRight') nextSlide(); });
+      // iniciar
+      goTo(0);
+      startTimer();
+    })();
+    // Tornar header 'sticky' ao rolar além do hero
+    (function(){
+      var header = document.querySelector('header');
+      var hero = document.querySelector('.hero-carousel');
+      var container = document.querySelector('.container');
+      if(!header || !hero) return;
+      var threshold = hero.getBoundingClientRect().height - header.offsetHeight;
+      function onScroll(){
+        var scrolled = window.scrollY || window.pageYOffset;
+        if(scrolled > threshold){
+          if(!header.classList.contains('is-sticky')){
+            header.classList.add('is-sticky');
+            // prevenir salto: adicionar padding-top equivalente ao header na main container
+            document.documentElement.style.setProperty('--header-offset', header.offsetHeight + 'px');
+            document.querySelector('main').style.paddingTop = header.offsetHeight + 'px';
+          }
+        } else {
+          if(header.classList.contains('is-sticky')){
+            header.classList.remove('is-sticky');
+            document.querySelector('main').style.paddingTop = '';
+          }
+        }
+      }
+      // run on load and scroll
+      window.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('resize', function(){ threshold = hero.getBoundingClientRect().height - header.offsetHeight; onScroll(); });
+      onScroll();
+    })();
+  </script>
+  <script>
+    // Fallback JS reforçado: recalcula conteúdos dinamicamente, força checked via label click
+    (function(){
+      function getRadios(){ return Array.prototype.slice.call(document.querySelectorAll('input[name="day"]')); }
+      function getContents(){ return Array.prototype.slice.call(document.querySelectorAll('.schedule-content')); }
+      function showSelected(){
+        var checked = document.querySelector('input[name="day"]:checked');
+        var day = checked ? checked.id.replace('day','').trim() : null;
+        var contents = getContents();
+        try{ console.debug('[agenda] showSelected - radios:', getRadios().length, 'contents:', contents.length, 'checked:', checked ? checked.id : 'none', 'day=', day); }catch(e){}
+        contents.forEach(function(el){
+          var elDay = el.getAttribute('data-day');
+          // comparar como números para evitar diferenças de string
+          var match = (day !== null) && (Number(elDay) === Number(day));
+          if(match){
+            el.style.display = 'block';
+            el.style.opacity = '1';
+            el.setAttribute('aria-hidden','false');
+          } else {
+            el.style.display = 'none';
+            el.style.opacity = '0';
+            el.setAttribute('aria-hidden','true');
+          }
+        });
+      }
+      // eventos: change nos radios
+      getRadios().forEach(function(r){ r.addEventListener('change', showSelected); });
+      // quando clica no label, forçar o radio correspondente e disparar change
+      document.querySelectorAll('.day-label').forEach(function(lbl){ lbl.addEventListener('click', function(e){
+        var forId = lbl.getAttribute('for');
+        if(forId){
+          var radio = document.getElementById(forId);
+          if(radio){
+            radio.checked = true;
+            // dispatch change para garantir reação
+            var ev = document.createEvent('HTMLEvents'); ev.initEvent('change', true, false); radio.dispatchEvent(ev);
+            // pequena defasagem para garantir updates de layout
+            setTimeout(showSelected,10);
+          }
+        }
+      }); });
+      // inicializar
+      showSelected();
+      window.addEventListener('load', function(){ setTimeout(showSelected,20); });
+    })();
+  </script>
+  <script>
+    // Theme toggle: light / black (persist in localStorage)
+    (function(){
+      var btn = document.getElementById('themeToggle');
+      if(!btn) return;
+      var iconEl = btn.querySelector('.theme-icon');
+      var labelEl = btn.querySelector('.theme-label');
+      function setIconAndLabel(isDark){
+        if(isDark){
+          // moon icon
+          iconEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          labelEl.textContent = 'Black';
+          btn.setAttribute('aria-pressed','true');
+        } else {
+          // sun icon
+          iconEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 20v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4.2 4.2l1.4 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M18.4 18.4l1.4 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 12h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M20 12h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4.2 19.8l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+          labelEl.textContent = 'Light';
+          btn.setAttribute('aria-pressed','false');
+        }
+      }
+      function applyTheme(t){
+        var dark = t === 'black';
+        if(dark) document.body.classList.add('theme-dark'); else document.body.classList.remove('theme-dark');
+        setIconAndLabel(dark);
+      }
+      btn.addEventListener('click', function(){
+        var next = document.body.classList.contains('theme-dark') ? 'light' : 'black';
+        localStorage.setItem('agenda-theme', next);
+        applyTheme(next);
+      });
+      // apply saved theme or use system preference
+      var saved = localStorage.getItem('agenda-theme');
+      if(!saved){
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        saved = prefersDark ? 'black' : 'light';
+      }
+      applyTheme(saved);
+    })();
+  </script>
+</body>
+</html>
